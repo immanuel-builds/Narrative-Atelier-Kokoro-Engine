@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.auth.auth import login_required
 from app.models.models import Project
+from app.storage.markdown_handler import MarkdownHandler
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -15,10 +16,12 @@ async def create_project(
     user=Depends(login_required),
     db: Session = Depends(get_db)
 ):
+    paths = MarkdownHandler.ensure_project_structure(title)
     new_project = Project(
         user_id=user.id,
         title=title,
-        description=description
+        description=description,
+        storage_path=str(paths["root"])
     )
     db.add(new_project)
     db.commit()

@@ -28,6 +28,18 @@ document.addEventListener('DOMContentLoaded', () => {
         FocusMode.init();
     }
 
+    if (window.Diagnostics) {
+        Diagnostics.init();
+    }
+
+    if (window.RecoveryManager) {
+        RecoveryManager.init();
+    }
+
+    if (window.EditorSearch) {
+        EditorSearch.init();
+    }
+
     // Statistics
     const updateStats = () => {
         const text = contentArea.value || '';
@@ -41,7 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     if (contentArea) {
-        contentArea.addEventListener('input', updateStats);
+        contentArea.addEventListener('input', () => {
+            updateStats();
+            if (window.RecoveryManager) {
+                RecoveryManager.recordSession(contentArea.value);
+            }
+        });
         updateStats(); // Initial count
     }
 
@@ -61,6 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const draftPanel = document.getElementById('draft-panel');
             if (draftPanel) draftPanel.classList.remove('open');
+
+            const analysisPanel = document.getElementById('analysis-panel');
+            if (analysisPanel) analysisPanel.classList.remove('open');
         }
     });
 });

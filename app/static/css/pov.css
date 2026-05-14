@@ -1,0 +1,27 @@
+.pov-toggle-btn {
+    position: fixed;
+    bottom: 12rem;
+    right: 2rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.pov-toggle-btn:hover {
+    border-color: var(--indigo-muted);
+    transform: translateY(-2px);
+}
+
+.analysis-results .diagnostic-item strong {
+    color: var(--indigo-muted);
+    font-weight: 500;
+}

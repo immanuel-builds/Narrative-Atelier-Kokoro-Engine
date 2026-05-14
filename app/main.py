@@ -1,20 +1,22 @@
 from fastapi import FastAPI, Request, Depends
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+from app.core.packaging import STATIC_DIR, templates
 from app.auth.routes import router as auth_router
 from app.dashboard.routes import router as dashboard_router
 from app.projects.routes import router as projects_router
 from app.editor.routes import router as editor_router
 from app.ai.routes import router as ai_router
+from app.diagnostics.routes import router as diagnostics_router
+from app.pov.routes import router as pov_router
+from app.storage.routes import router as storage_router
+from app.reliability.routes import router as reliability_router
 from app.auth.auth import get_user_from_session
 import os
 
 app = FastAPI(title="Narrative Atelier: Kokoro Engine")
 
 # Mount static files
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-
-templates = Jinja2Templates(directory="app/templates")
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 # Register routers
 app.include_router(auth_router)
@@ -22,6 +24,10 @@ app.include_router(dashboard_router)
 app.include_router(projects_router)
 app.include_router(editor_router)
 app.include_router(ai_router)
+app.include_router(diagnostics_router)
+app.include_router(pov_router)
+app.include_router(storage_router)
+app.include_router(reliability_router)
 
 @app.get("/")
 async def landing(request: Request, user=Depends(get_user_from_session)):

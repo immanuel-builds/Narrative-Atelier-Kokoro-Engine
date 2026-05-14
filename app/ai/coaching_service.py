@@ -2,6 +2,7 @@ from app.ai.providers.groq_provider import GroqProvider
 from app.ai.providers.gemini_provider import GeminiProvider
 from app.ai.integrity_guard import IntegrityGuard
 from app.core.config import settings
+from app.reliability.fallback_manager import FallbackManager
 
 class CoachingService:
     def __init__(self):

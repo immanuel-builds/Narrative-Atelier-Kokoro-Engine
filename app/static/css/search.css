@@ -1,0 +1,26 @@
+.search-bar {
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    border-left: 1px solid var(--border-color);
+}
+
+.search-bar input {
+    background: none;
+    border: none;
+    font-size: 0.75rem;
+    color: var(--text-primary);
+    width: 150px;
+    padding: 0.5rem;
+    outline: none;
+}
+
+.search-bar input::placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+    opacity: 0.7;
+}
+
+.stats-item svg {
+    vertical-align: middle;
+}

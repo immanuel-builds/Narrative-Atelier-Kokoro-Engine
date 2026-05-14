@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.auth.auth import login_required
 from app.models.models import Project, Chapter, Draft
+from app.storage.storage_service import StorageService
 
 router = APIRouter(prefix="/editor", tags=["editor"])
 templates = Jinja2Templates(directory="app/templates")
@@ -32,19 +33,28 @@ async def workspace(
 
     active_draft = None
     drafts = []
+    content = ""
+
     if active_chapter:
+        storage = StorageService(project.title)
+
         # Ensure at least one draft exists
         existing_drafts = db.query(Draft).filter(Draft.chapter_id == active_chapter.id).all()
         if not existing_drafts:
             active_draft = Draft(
                 chapter_id=active_chapter.id,
                 title="Initial Draft",
-                content=active_chapter.content or "",
                 draft_type="rough",
-                is_active=1
+                is_active=True
             )
             db.add(active_draft)
             db.commit()
+
+            # Create file
+            file_path = storage.save_draft(active_chapter.id, active_draft.id, active_draft.title, "")
+            active_draft.file_path = file_path
+            db.commit()
+
             existing_drafts = [active_draft]
 
         drafts = existing_drafts
@@ -52,9 +62,12 @@ async def workspace(
         if draft_id:
             active_draft = db.query(Draft).filter(Draft.id == draft_id, Draft.chapter_id == active_chapter.id).first()
         else:
-            active_draft = db.query(Draft).filter(Draft.chapter_id == active_chapter.id, Draft.is_active == 1).first()
+            active_draft = db.query(Draft).filter(Draft.chapter_id == active_chapter.id, Draft.is_active == True).first()
             if not active_draft:
                 active_draft = drafts[0]
+
+        if active_draft and active_draft.file_path:
+            content = storage.get_content(active_draft.file_path)
 
     return templates.TemplateResponse("editor/workspace.html", {
         "request": request,
@@ -63,7 +76,8 @@ async def workspace(
         "chapters": chapters,
         "active_chapter": active_chapter,
         "drafts": sorted(drafts, key=lambda d: d.created_at, reverse=True),
-        "active_draft": active_draft
+        "active_draft": active_draft,
+        "content": content
     })
 
 @router.post("/{project_id}/chapters/create")
@@ -84,10 +98,24 @@ async def create_chapter(
     new_chapter = Chapter(
         project_id=project_id,
         title=title,
-        content="",
         chapter_order=next_order
     )
     db.add(new_chapter)
+    db.commit()
+
+    # Initialize storage and first draft
+    storage = StorageService(project.title)
+    new_draft = Draft(
+        chapter_id=new_chapter.id,
+        title=title,
+        draft_type="rough",
+        is_active=True
+    )
+    db.add(new_draft)
+    db.commit()
+
+    file_path = storage.save_draft(new_chapter.id, new_draft.id, title, "")
+    new_draft.file_path = file_path
     db.commit()
 
     return RedirectResponse(url=f"/editor/{project_id}?chapter_id={new_chapter.id}", status_code=status.HTTP_302_FOUND)
@@ -111,15 +139,15 @@ async def save_chapter(
         raise HTTPException(status_code=404, detail="Chapter not found")
 
     chapter.title = title
-    # Also save to active draft
+
     if draft_id:
         draft = db.query(Draft).filter(Draft.id == draft_id, Draft.chapter_id == chapter_id).first()
         if draft:
             draft.title = title
-            draft.content = content
-            # If saving active draft, also update chapter content for backward compatibility/summary
-            if draft.is_active:
-                chapter.content = content
+            # Save to file
+            storage = StorageService(project.title)
+            file_path = storage.save_draft(chapter_id, draft_id, title, content)
+            draft.file_path = file_path
 
     db.commit()
     return RedirectResponse(url=f"/editor/{project_id}?chapter_id={chapter_id}&draft_id={draft_id}", status_code=status.HTTP_302_FOUND)
@@ -147,9 +175,10 @@ async def autosave_chapter(
         draft = db.query(Draft).filter(Draft.id == draft_id, Draft.chapter_id == chapter_id).first()
         if draft:
             draft.title = title
-            draft.content = content
-            if draft.is_active:
-                chapter.content = content
+            # Save to file
+            storage = StorageService(project.title)
+            file_path = storage.save_draft(chapter_id, draft_id, title, content)
+            draft.file_path = file_path
 
     db.commit()
     return {"status": "success", "message": "Autosaved"}
@@ -169,22 +198,27 @@ async def create_draft(
         raise HTTPException(status_code=404, detail="Project not found")
 
     content = ""
+    storage = StorageService(project.title)
+
     if duplicate_from:
         source_draft = db.query(Draft).filter(Draft.id == duplicate_from, Draft.chapter_id == chapter_id).first()
-        if source_draft:
-            content = source_draft.content
+        if source_draft and source_draft.file_path:
+            content = storage.get_content(source_draft.file_path)
 
     # Set others to inactive
-    db.query(Draft).filter(Draft.chapter_id == chapter_id).update({"is_active": 0})
+    db.query(Draft).filter(Draft.chapter_id == chapter_id).update({"is_active": False})
 
     new_draft = Draft(
         chapter_id=chapter_id,
         title=title,
-        content=content,
         draft_type=draft_type,
-        is_active=1
+        is_active=True
     )
     db.add(new_draft)
+    db.commit()
+
+    file_path = storage.save_draft(chapter_id, new_draft.id, title, content)
+    new_draft.file_path = file_path
     db.commit()
 
     return RedirectResponse(url=f"/editor/{project_id}?chapter_id={chapter_id}&draft_id={new_draft.id}", status_code=status.HTTP_302_FOUND)
@@ -201,14 +235,10 @@ async def activate_draft(
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    db.query(Draft).filter(Draft.chapter_id == chapter_id).update({"is_active": 0})
+    db.query(Draft).filter(Draft.chapter_id == chapter_id).update({"is_active": False})
     draft = db.query(Draft).filter(Draft.id == draft_id, Draft.chapter_id == chapter_id).first()
     if draft:
-        draft.is_active = 1
-        # Update chapter content to match active draft
-        chapter = db.query(Chapter).filter(Chapter.id == chapter_id).first()
-        if chapter:
-            chapter.content = draft.content
+        draft.is_active = True
         db.commit()
 
     return RedirectResponse(url=f"/editor/{project_id}?chapter_id={chapter_id}&draft_id={draft_id}", status_code=status.HTTP_302_FOUND)

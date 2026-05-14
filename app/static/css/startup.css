@@ -1,0 +1,30 @@
+/* Startup and Splash Styles */
+.startup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-primary);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease;
+}
+
+.startup-logo {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 2rem;
+    letter-spacing: 0.2em;
+    color: var(--indigo-muted);
+    margin-bottom: 2rem;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}

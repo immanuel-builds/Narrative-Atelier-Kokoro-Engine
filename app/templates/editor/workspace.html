@@ -21,6 +21,15 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/css/focus-mode.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/ai-panel.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/enhancement-menu.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/analysis-panel.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/diagnostics.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/pov.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/comparison-view.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/insight-panel.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/export.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/recovery.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/search.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/startup.css') }}">
 </head>
 <body style="overflow: hidden;">
     <!-- Hidden data for JavaScript -->
@@ -36,6 +45,16 @@
             <span class="serif" style="font-size: 1.25rem; letter-spacing: 0.05em;">{{ project.title }}</span>
         </div>
         <div class="flex items-center" style="gap: 1.5rem;">
+            <div class="dropdown">
+                <button class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;">Export</button>
+                <div class="dropdown-content">
+                    <a href="/storage/export/{{ project.id }}?format=md">Markdown (.md)</a>
+                    <a href="/storage/export/{{ project.id }}?format=txt">Plain Text (.txt)</a>
+                    <a href="/storage/export/{{ project.id }}?format=docx">Word (.docx)</a>
+                </div>
+            </div>
+            <button onclick="POVInsight.toggle()" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;" title="POV Mirror">POV Mirror</button>
+            <button onclick="Diagnostics.toggle()" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;" title="Narrative Diagnostics">Diagnostics</button>
             <button onclick="CoachingPanel.toggle()" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;" title="Editorial Coaching">AI Coach</button>
             <button onclick="FocusMode.toggle()" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;" title="Focus Mode (ESC to exit)">Focus</button>
             <button onclick="FocusMode.toggleFullscreen()" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;">Fullscreen</button>
@@ -45,7 +64,12 @@
     </div>
 
     <div id="tab-bar" class="tab-bar">
-        <!-- Tabs injected by JavaScript -->
+        <div id="tabs-container" class="flex" style="flex: 1;">
+            <!-- Tabs injected by JavaScript -->
+        </div>
+        <div class="search-bar">
+            <input type="text" id="editor-search" placeholder="Search manuscript..." title="Ctrl+F to search">
+        </div>
     </div>
 
     <div class="editor-container">
@@ -70,7 +94,7 @@
                     <form id="editor-form" action="/editor/{{ project.id }}/chapters/{{ active_chapter.id }}/save" method="POST">
                         <input type="hidden" name="draft_id" value="{{ active_draft.id if active_draft else '' }}">
                         <input type="text" name="title" class="editor-title" value="{{ active_draft.title if active_draft else active_chapter.title }}" placeholder="Chapter Title">
-                        <textarea name="content" class="editor-content" placeholder="Begin your narrative...">{{ active_draft.content if active_draft else active_chapter.content }}</textarea>
+                        <textarea name="content" class="editor-content" placeholder="Begin your narrative...">{{ content }}</textarea>
                     </form>
                 {% else %}
                     <div style="text-align: center; margin-top: 10rem;">
@@ -118,6 +142,43 @@
     <div class="ai-toggle-btn" onclick="CoachingPanel.toggle()" title="AI Editorial Coach">
         <span style="font-size: 1.2rem;">&#10024;</span>
     </div>
+
+    <div class="diag-toggle-btn" onclick="Diagnostics.toggle()" title="Narrative Diagnostics">
+        <span style="font-size: 1.2rem;">&#128301;</span>
+    </div>
+
+    <div class="pov-toggle-btn" onclick="POVInsight.toggle()" title="POV Mirror & Insights">
+        <span style="font-size: 1.2rem;">&#129680;</span>
+    </div>
+
+    <!-- POV Insight Panel -->
+    <aside id="pov-panel" class="analysis-panel">
+        <div class="analysis-panel-header flex justify-between items-center">
+            <span class="serif" style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em;">POV Mirror</span>
+            <button onclick="POVInsight.toggle()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--indigo-muted);">&times;</button>
+        </div>
+        <div id="pov-insights" class="analysis-results">
+            <!-- POV Insights injected here -->
+        </div>
+        <div style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+            <button onclick="POVTransform.openModal()" class="btn btn-primary" style="width: 100%; font-size: 0.75rem;">Transform Perspective</button>
+            <button onclick="POVInsight.refresh()" class="btn btn-outline" style="width: 100%; font-size: 0.75rem;">Refresh Analysis</button>
+        </div>
+    </aside>
+
+    <!-- Diagnostics Panel -->
+    <aside id="analysis-panel" class="analysis-panel">
+        <div class="analysis-panel-header flex justify-between items-center">
+            <span class="serif" style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em;">Narrative Diagnostics</span>
+            <button onclick="Diagnostics.toggle()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--indigo-muted);">&times;</button>
+        </div>
+        <div id="analysis-results" class="analysis-results">
+            <!-- Results injected here -->
+        </div>
+        <div style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+            <button onclick="Diagnostics.runAnalysis()" class="btn btn-outline" style="width: 100%; font-size: 0.75rem;">Refresh Analysis</button>
+        </div>
+    </aside>
 
     <!-- AI Coaching Panel -->
     <aside id="ai-panel" class="ai-panel">
@@ -187,6 +248,53 @@
         </div>
     </div>
 
+    <!-- POV Transformation Modal -->
+    <div id="pov-transform-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1200; justify-content: center; align-items: center;">
+        <div class="card" style="width: 100%; max-width: 400px;">
+            <h2 class="serif mb-8">Shift Perspective</h2>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+                Select a target perspective. The system will attempt to preserve your voice and intent.
+            </p>
+            <div class="input-group">
+                <label for="target-pov-select">Target POV</label>
+                <select id="target-pov-select" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 2px;">
+                    <option value="first person">First Person (I/Me)</option>
+                    <option value="second person">Second Person (You)</option>
+                    <option value="third person limited">Third Person Limited (He/She - focused)</option>
+                    <option value="third person omniscient">Third Person Omniscient (He/She - all-knowing)</option>
+                </select>
+            </div>
+            <div class="flex justify-end" style="gap: 1rem; margin-top: 2rem;">
+                <button type="button" onclick="POVTransform.closeModal()" class="btn btn-outline">Cancel</button>
+                <button onclick="POVTransform.runTransform()" class="btn btn-primary">Begin Shift</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Perspective Comparison View -->
+    <div id="comparison-overlay" class="comparison-overlay" style="display: none;">
+        <div class="comparison-container">
+            <div class="comparison-header">
+                <h2 class="serif">Perspective Comparison</h2>
+                <button onclick="ComparisonView.close()" class="btn btn-outline" style="padding: 0.4rem 1rem;">Exit Comparison</button>
+            </div>
+            <div class="comparison-grid">
+                <div class="comparison-pane">
+                    <div class="pane-label">Original</div>
+                    <div id="original-text-pane" class="pane-content"></div>
+                </div>
+                <div class="comparison-pane">
+                    <div class="pane-label">Perspective Shift</div>
+                    <div id="transformed-text-pane" class="pane-content"></div>
+                </div>
+            </div>
+            <div class="comparison-footer">
+                <p style="font-size: 0.875rem; color: var(--text-muted);">Compare the emotional resonance and narrative intimacy of each version.</p>
+                <button id="apply-transformation" class="btn btn-primary">Adopt This Perspective</button>
+            </div>
+        </div>
+    </div>
+
     <!-- New Draft Modal -->
     <div id="new-draft-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1100; justify-content: center; align-items: center;">
         <div class="card" style="width: 100%; max-width: 400px;">
@@ -219,7 +327,18 @@
         </div>
     </div>
 
+    <!-- Recovery Notification Overlay -->
+    <div id="recovery-toast" class="recovery-toast">
+        <span id="recovery-message">Unsaved changes detected.</span>
+        <button onclick="RecoveryManager.restore()">Restore</button>
+        <button onclick="RecoveryManager.dismiss()">Dismiss</button>
+    </div>
+
     <div class="stats-bar">
+        <span class="stats-item" id="save-indicator" title="Local-First Storage Active">
+            <svg width="10" height="10" viewBox="0 0 10 10" style="margin-right: 5px;"><circle cx="5" cy="5" r="4" fill="#48bb78"/></svg>
+            LOCAL
+        </span>
         <span class="stats-item" id="word-count">0 words</span>
         <span class="stats-item" id="char-count">0 chars</span>
         <span class="stats-item" id="reading-time">0 min read</span>
@@ -231,6 +350,15 @@
     <script src="{{ url_for('static', path='/js/enhancement-menu.js') }}"></script>
     <script src="{{ url_for('static', path='/js/coaching-panel.js') }}"></script>
     <script src="{{ url_for('static', path='/js/ai-tools.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/diagnostics.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/analysis-sidebar.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/pov-transform.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/comparison-view.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/insight-panel.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/keyboard-shortcuts.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/autosave-recovery.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/search.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/pacing-visualizer.js') }}"></script>
     <script src="{{ url_for('static', path='/js/editor.js') }}"></script>
 </body>
 </html>

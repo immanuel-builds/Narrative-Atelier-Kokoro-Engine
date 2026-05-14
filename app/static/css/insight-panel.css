@@ -1,0 +1,12 @@
+/* Styles for POV Insight Panel */
+#pov-panel {
+    z-index: 101; /* Above diagnostic button but below active panels */
+}
+
+#pov-panel.open {
+    transform: translateX(0);
+}
+
+.diag-title strong {
+    margin-left: 0.25rem;
+}

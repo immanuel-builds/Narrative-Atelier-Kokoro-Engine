@@ -1,0 +1,80 @@
+.comparison-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-primary);
+    z-index: 5000; /* Ensure it's above everything including sidebar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.comparison-container {
+    width: 95%;
+    height: 90%;
+    max-width: 1400px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.comparison-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comparison-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+}
+
+.comparison-pane {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color);
+}
+
+.comparison-pane:last-child {
+    border-right: none;
+}
+
+.pane-label {
+    padding: 0.5rem 2rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.pane-content {
+    flex: 1;
+    padding: 3rem;
+    overflow-y: auto;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.125rem;
+    line-height: 2;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    background: var(--bg-card);
+}
+
+.comparison-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-primary);
+}

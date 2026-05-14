@@ -2,6 +2,7 @@ from app.ai.providers.groq_provider import GroqProvider
 from app.ai.providers.gemini_provider import GeminiProvider
 from app.ai.integrity_guard import IntegrityGuard
 from app.core.config import settings
+from app.reliability.fallback_manager import FallbackManager
 
 class EnhancementService:
     def __init__(self):
@@ -26,4 +27,10 @@ class EnhancementService:
         system_prompt = self.get_system_prompt(enhancement_type).replace("{mode}", mode)
         user_prompt = f"Enhance the following text:\n\n{text}"
 
-        return await self.provider.generate_text(system_prompt, user_prompt, temperature=0.6)
+        try:
+            response = await self.provider.generate_text(system_prompt, user_prompt, temperature=0.6)
+            if "API Key not configured" in response:
+                return FallbackManager.get_ai_fallback_message(response)
+            return response
+        except Exception as e:
+            return FallbackManager.get_ai_fallback_message(str(e))
