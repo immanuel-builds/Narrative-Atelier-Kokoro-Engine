@@ -6,9 +6,11 @@ A minimalist narrative workspace built to sharpen authors, not replace them.
 
 - **Authentication:** Session-based login and registration.
 - **Project Management:** Create and dismantle narrative observatories (projects).
-- **Writing Workspace:** A distraction-free editor with chapter organization and a robust Draft and Versioning system.
+- **Writing Workspace:** A polished, distraction-free editor with focus mode, fullscreen support, and elegant typography.
+- **Autosave & Persistence:** Smooth autosave logic every 15 seconds and on typing pauses, with workspace session persistence.
+- **Navigation & Stats:** Chapter tab system for quick switching and live writing statistics (word count, reading time).
 - **Draft & Versioning:** Create multiple drafts for each chapter, switch between them, archive "stored memories", and experiment without fear of losing progress.
-- **Atmospheric Design:** Japanese-inspired minimalist UI with a focus on typography and calm.
+- **Atmospheric Design:** Japanese-inspired minimalist UI with a focus on typography, contemplation, and calm.
 
 ## Tech Stack
 

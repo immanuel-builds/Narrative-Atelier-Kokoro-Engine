@@ -124,6 +124,36 @@ async def save_chapter(
     db.commit()
     return RedirectResponse(url=f"/editor/{project_id}?chapter_id={chapter_id}&draft_id={draft_id}", status_code=status.HTTP_302_FOUND)
 
+@router.post("/{project_id}/chapters/{chapter_id}/autosave")
+async def autosave_chapter(
+    project_id: int,
+    chapter_id: int,
+    title: str = Form(...),
+    content: str = Form(""),
+    draft_id: int = Form(None),
+    user=Depends(login_required),
+    db: Session = Depends(get_db)
+):
+    project = db.query(Project).filter(Project.id == project_id, Project.user_id == user.id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    chapter = db.query(Chapter).filter(Chapter.id == chapter_id, Chapter.project_id == project_id).first()
+    if not chapter:
+        raise HTTPException(status_code=404, detail="Chapter not found")
+
+    chapter.title = title
+    if draft_id:
+        draft = db.query(Draft).filter(Draft.id == draft_id, Draft.chapter_id == chapter_id).first()
+        if draft:
+            draft.title = title
+            draft.content = content
+            if draft.is_active:
+                chapter.content = content
+
+    db.commit()
+    return {"status": "success", "message": "Autosaved"}
+
 @router.post("/{project_id}/chapters/{chapter_id}/drafts/create")
 async def create_draft(
     project_id: int,

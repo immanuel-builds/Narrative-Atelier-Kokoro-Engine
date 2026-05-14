@@ -45,14 +45,16 @@
 }
 
 .writing-area {
-    padding: 4rem;
+    padding: 4rem 2rem;
     overflow-y: auto;
     background: var(--bg-paper);
+    scroll-behavior: smooth;
 }
 
 .editor-wrapper {
     max-width: 800px;
     margin: 0 auto;
+    padding-bottom: 10rem;
 }
 
 .editor-title {
@@ -62,22 +64,47 @@
     font-family: 'Noto Serif JP', serif;
     font-size: 2.5rem;
     font-weight: 300;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
     outline: none;
     color: var(--text-main);
+    line-height: 1.2;
 }
 
 .editor-content {
     width: 100%;
-    min-height: 500px;
+    min-height: 60vh;
     border: none;
     background: transparent;
     font-family: 'Inter', sans-serif;
-    font-size: 1.125rem;
-    line-height: 1.8;
+    font-size: 1.2rem;
+    line-height: 2;
     resize: none;
     outline: none;
     color: var(--text-main);
+    letter-spacing: 0.01em;
+}
+
+.stats-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: white;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 1.5rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    z-index: 100;
+}
+
+.stats-item {
+    margin-left: 1.5rem;
 }
 
 .top-bar {

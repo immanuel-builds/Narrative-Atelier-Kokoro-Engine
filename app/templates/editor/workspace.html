@@ -17,17 +17,32 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/css/components.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/editor.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/drafts.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/tabs.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/focus-mode.css') }}">
 </head>
 <body style="overflow: hidden;">
+    <!-- Hidden data for JavaScript -->
+    <div id="editor-data"
+         data-project-id="{{ project.id }}"
+         data-chapter-id="{{ active_chapter.id if active_chapter else '' }}"
+         data-draft-id="{{ active_draft.id if active_draft else '' }}">
+    </div>
+
     <div class="top-bar">
         <div class="flex items-center">
             <a href="/dashboard" style="text-decoration: none; color: var(--text-muted); margin-right: 1.5rem; font-size: 1.25rem;">&larr;</a>
             <span class="serif" style="font-size: 1.25rem; letter-spacing: 0.05em;">{{ project.title }}</span>
         </div>
         <div class="flex items-center" style="gap: 1.5rem;">
+            <button onclick="FocusMode.toggle()" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;" title="Focus Mode (ESC to exit)">Focus</button>
+            <button onclick="FocusMode.toggleFullscreen()" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;">Fullscreen</button>
             <span id="save-status" style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">All changes saved</span>
             <button form="editor-form" type="submit" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">Save Draft</button>
         </div>
+    </div>
+
+    <div id="tab-bar" class="tab-bar">
+        <!-- Tabs injected by JavaScript -->
     </div>
 
     <div class="editor-container">
@@ -146,6 +161,15 @@
         </div>
     </div>
 
+    <div class="stats-bar">
+        <span class="stats-item" id="word-count">0 words</span>
+        <span class="stats-item" id="char-count">0 chars</span>
+        <span class="stats-item" id="reading-time">0 min read</span>
+    </div>
+
+    <script src="{{ url_for('static', path='/js/autosave.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/tabs.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/focus-mode.js') }}"></script>
     <script src="{{ url_for('static', path='/js/editor.js') }}"></script>
 </body>
 </html>
