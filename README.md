@@ -10,6 +10,9 @@ A minimalist narrative workspace built to sharpen authors, not replace them.
 - **Autosave & Persistence:** Smooth autosave logic every 15 seconds and on typing pauses, with workspace session persistence.
 - **Navigation & Stats:** Chapter tab system for quick switching and live writing statistics (word count, reading time).
 - **Draft & Versioning:** Create multiple drafts for each chapter, switch between them, archive "stored memories", and experiment without fear of losing progress.
+- **AI Enhancement Layer:** Contextual AI tools for tone refinement, description enhancement, and style transformation.
+- **AI Editorial Coach:** A restrained, literary AI coach providing critique on pacing, dialogue, and subtext.
+- **Creative Integrity System:** Guardrails that prevent automated story generation and ensure authors remain the primary creators.
 - **Atmospheric Design:** Japanese-inspired minimalist UI with a focus on typography, contemplation, and calm.
 
 ## Tech Stack
@@ -21,7 +24,14 @@ A minimalist narrative workspace built to sharpen authors, not replace them.
 ## Setup Instructions
 
 1. **Clone the repository.**
-2. **Install dependencies:**
+2. **Set up Environment Variables:**
+   Create a `.env` file from `.env.example` and add your API keys:
+   ```bash
+   GROQ_API_KEY=your_key_here
+   GEMINI_API_KEY=your_key_here
+   DEFAULT_AI_PROVIDER=groq # or gemini
+   ```
+3. **Install dependencies:**
    ```bash
    pip install -r requirements.txt
    ```

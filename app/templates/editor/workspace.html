@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/css/drafts.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/tabs.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/focus-mode.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/ai-panel.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/enhancement-menu.css') }}">
 </head>
 <body style="overflow: hidden;">
     <!-- Hidden data for JavaScript -->
@@ -34,6 +36,7 @@
             <span class="serif" style="font-size: 1.25rem; letter-spacing: 0.05em;">{{ project.title }}</span>
         </div>
         <div class="flex items-center" style="gap: 1.5rem;">
+            <button onclick="CoachingPanel.toggle()" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;" title="Editorial Coaching">AI Coach</button>
             <button onclick="FocusMode.toggle()" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;" title="Focus Mode (ESC to exit)">Focus</button>
             <button onclick="FocusMode.toggleFullscreen()" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;">Fullscreen</button>
             <span id="save-status" style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">All changes saved</span>
@@ -108,8 +111,63 @@
         </div>
     </aside>
 
-    <div class="draft-toggle-btn" onclick="document.getElementById('draft-panel').classList.toggle('open')">
+    <div class="draft-toggle-btn" onclick="document.getElementById('draft-panel').classList.toggle('open')" title="Drafts">
         <span style="font-size: 1.2rem;">&#128394;</span>
+    </div>
+
+    <div class="ai-toggle-btn" onclick="CoachingPanel.toggle()" title="AI Editorial Coach">
+        <span style="font-size: 1.2rem;">&#10024;</span>
+    </div>
+
+    <!-- AI Coaching Panel -->
+    <aside id="ai-panel" class="ai-panel">
+        <div class="ai-panel-header flex justify-between items-center">
+            <span class="serif" style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em;">Editorial Coach</span>
+            <button onclick="CoachingPanel.toggle()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--indigo-muted);">&times;</button>
+        </div>
+        <div id="ai-suggestions" class="ai-suggestion-box">
+            <!-- AI feedback injected here -->
+        </div>
+        <div style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+            <button onclick="CoachingPanel.refreshCritique()" class="btn btn-outline" style="width: 100%; font-size: 0.75rem;">Refresh Critique</button>
+        </div>
+    </aside>
+
+    <!-- Floating Enhancement Menu -->
+    <div id="enhancement-menu" class="enhancement-menu">
+        <div class="enhancement-item" onmouseover="">
+            <span>Enhance Tone</span>
+            <span>&rsaquo;</span>
+            <div class="enhancement-submenu">
+                <div class="enhancement-item" onclick="EnhancementMenu.requestEnhancement('tone', 'poetic')">Poetic</div>
+                <div class="enhancement-item" onclick="EnhancementMenu.requestEnhancement('tone', 'darker')">Darker</div>
+                <div class="enhancement-item" onclick="EnhancementMenu.requestEnhancement('tone', 'noir')">Noir</div>
+                <div class="enhancement-item" onclick="EnhancementMenu.requestEnhancement('tone', 'mythic')">Mythic</div>
+                <div class="enhancement-item" onclick="EnhancementMenu.requestEnhancement('tone', 'intimate')">Intimate</div>
+            </div>
+        </div>
+        <div class="enhancement-item" onclick="EnhancementMenu.requestEnhancement('description', 'sensory')">Sensory Detail</div>
+        <div class="enhancement-item">
+            <span>Style</span>
+            <span>&rsaquo;</span>
+            <div class="enhancement-submenu">
+                <div class="enhancement-item" onclick="EnhancementMenu.requestEnhancement('style', 'concise')">Concise</div>
+                <div class="enhancement-item" onclick="EnhancementMenu.requestEnhancement('style', 'literary')">Literary</div>
+                <div class="enhancement-item" onclick="EnhancementMenu.requestEnhancement('style', 'emotional')">Emotional</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhancement Result Overlay -->
+    <div id="enhancement-overlay" class="enhancement-overlay">
+        <div class="enhancement-modal card">
+            <h3 class="serif mb-8">AI Refinement</h3>
+            <div id="enhancement-result" class="ai-suggestion-box" style="margin-bottom: 2rem; max-height: 300px;"></div>
+            <div class="flex justify-end" style="gap: 1rem;">
+                <button onclick="document.getElementById('enhancement-overlay').style.display='none'" class="btn btn-outline">Discard</button>
+                <button id="apply-enhancement" class="btn btn-primary">Apply Refinement</button>
+            </div>
+        </div>
     </div>
 
     <!-- New Chapter Modal -->
@@ -170,6 +228,9 @@
     <script src="{{ url_for('static', path='/js/autosave.js') }}"></script>
     <script src="{{ url_for('static', path='/js/tabs.js') }}"></script>
     <script src="{{ url_for('static', path='/js/focus-mode.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/enhancement-menu.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/coaching-panel.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/ai-tools.js') }}"></script>
     <script src="{{ url_for('static', path='/js/editor.js') }}"></script>
 </body>
 </html>
