@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/css/layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/components.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/editor.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/drafts.css') }}">
 </head>
 <body style="overflow: hidden;">
     <div class="top-bar">
@@ -49,8 +50,9 @@
             <div class="editor-wrapper fade-in">
                 {% if active_chapter %}
                     <form id="editor-form" action="/editor/{{ project.id }}/chapters/{{ active_chapter.id }}/save" method="POST">
-                        <input type="text" name="title" class="editor-title" value="{{ active_chapter.title }}" placeholder="Chapter Title">
-                        <textarea name="content" class="editor-content" placeholder="Begin your narrative...">{{ active_chapter.content }}</textarea>
+                        <input type="hidden" name="draft_id" value="{{ active_draft.id if active_draft else '' }}">
+                        <input type="text" name="title" class="editor-title" value="{{ active_draft.title if active_draft else active_chapter.title }}" placeholder="Chapter Title">
+                        <textarea name="content" class="editor-content" placeholder="Begin your narrative...">{{ active_draft.content if active_draft else active_chapter.content }}</textarea>
                     </form>
                 {% else %}
                     <div style="text-align: center; margin-top: 10rem;">
@@ -60,6 +62,39 @@
                 {% endif %}
             </div>
         </main>
+    </div>
+
+    <!-- Draft Panel -->
+    <aside id="draft-panel" class="draft-panel">
+        <div class="draft-panel-header flex justify-between items-center">
+            <span class="serif" style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em;">Drafts</span>
+            <button onclick="document.getElementById('new-draft-modal').style.display='flex'" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--indigo-muted);">&plus;</button>
+        </div>
+        <div class="draft-list">
+            {% for draft in drafts %}
+                <div class="draft-item {% if active_draft and active_draft.id == draft.id %}active{% endif %}" onclick="window.location.href='/editor/{{ project.id }}/chapters/{{ active_chapter.id }}/drafts/{{ draft.id }}/activate'">
+                    <div class="flex justify-between items-center">
+                        <span style="font-size: 0.9rem; font-weight: 500;">{{ draft.title }}</span>
+                        <span class="badge badge-{{ draft.draft_type }}">{{ draft.draft_type }}</span>
+                    </div>
+                    <div class="draft-meta">
+                        <span>{{ draft.updated_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        <div style="display: flex; gap: 0.5rem;">
+                            {% if draft.draft_type != 'archived' %}
+                                <a href="/editor/{{ project.id }}/chapters/{{ active_chapter.id }}/drafts/{{ draft.id }}/archive" onclick="event.stopPropagation();" title="Archive" style="color: var(--text-muted); text-decoration: none;">&infin;</a>
+                            {% else %}
+                                <a href="/editor/{{ project.id }}/chapters/{{ active_chapter.id }}/drafts/{{ draft.id }}/restore" onclick="event.stopPropagation();" title="Restore" style="color: var(--text-muted); text-decoration: none;">&circlearrowleft;</a>
+                            {% endif %}
+                            <a href="/editor/{{ project.id }}/chapters/{{ active_chapter.id }}/drafts/{{ draft.id }}/delete" onclick="event.stopPropagation(); return confirm('Delete this draft permanently?');" title="Delete" style="color: #cbd5e0; text-decoration: none;">&times;</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </aside>
+
+    <div class="draft-toggle-btn" onclick="document.getElementById('draft-panel').classList.toggle('open')">
+        <span style="font-size: 1.2rem;">&#128394;</span>
     </div>
 
     <!-- New Chapter Modal -->
@@ -74,6 +109,38 @@
                 <div class="flex justify-end" style="gap: 1rem;">
                     <button type="button" onclick="document.getElementById('new-chapter-modal').style.display='none'" class="btn btn-outline">Cancel</button>
                     <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Draft Modal -->
+    <div id="new-draft-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1100; justify-content: center; align-items: center;">
+        <div class="card" style="width: 100%; max-width: 400px;">
+            <h2 class="serif mb-8">New Draft</h2>
+            <form action="/editor/{{ project.id }}/chapters/{{ active_chapter.id }}/drafts/create" method="POST">
+                <div class="input-group">
+                    <label for="draft_title">Draft Title</label>
+                    <input type="text" id="draft_title" name="title" required placeholder="e.g., Experimental Opening">
+                </div>
+                <div class="input-group">
+                    <label for="draft_type">Type</label>
+                    <select name="draft_type" id="draft_type" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 2px;">
+                        <option value="rough">Rough</option>
+                        <option value="revised">Revised</option>
+                        <option value="polished">Polished</option>
+                        <option value="experimental">Experimental</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>
+                        <input type="checkbox" name="duplicate_from" value="{{ active_draft.id if active_draft else '' }}" checked>
+                        Duplicate content from current draft
+                    </label>
+                </div>
+                <div class="flex justify-end" style="gap: 1rem;">
+                    <button type="button" onclick="document.getElementById('new-draft-modal').style.display='none'" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Draft</button>
                 </div>
             </form>
         </div>

@@ -1,5 +1,5 @@
 from app.core.database import engine, Base
-from app.models.models import User, Project, Chapter
+from app.models.models import User, Project, Chapter, Draft
 
 def init_db():
     print("Initializing database...")

@@ -25,7 +25,21 @@ document.addEventListener('DOMContentLoaded', () => {
     titleArea.addEventListener('input', handleInput);
 
     // Focus content area if title is present
-    if (titleArea.value && !contentArea.value) {
+    if (titleArea && titleArea.value && contentArea && !contentArea.value) {
         contentArea.focus();
     }
+
+    // Handle ESC to close modals and panels
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const modals = ['new-chapter-modal', 'new-draft-modal', 'create-modal', 'edit-modal'];
+            modals.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+
+            const draftPanel = document.getElementById('draft-panel');
+            if (draftPanel) draftPanel.classList.remove('open');
+        }
+    });
 });

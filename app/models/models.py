@@ -24,7 +24,7 @@ class Project(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     owner = relationship("User", back_populates="projects")
-    chapters = relationship("Chapter", back_populates="project", cascade="all, delete-orphan", order_by="Chapter.chapter_order")
+    chapters = relationship("Chapter", back_populates="project", cascade="all, delete-orphan")
 
 class Chapter(Base):
     __tablename__ = "chapters"
@@ -37,3 +37,18 @@ class Chapter(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     project = relationship("Project", back_populates="chapters")
+    drafts = relationship("Draft", back_populates="chapter", cascade="all, delete-orphan")
+
+class Draft(Base):
+    __tablename__ = "drafts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    chapter_id = Column(Integer, ForeignKey("chapters.id"), nullable=False)
+    title = Column(String(100), nullable=False)
+    content = Column(Text)
+    draft_type = Column(String(20), default="rough") # rough, revised, polished, experimental, archived
+    is_active = Column(Integer, default=0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    chapter = relationship("Chapter", back_populates="drafts")
