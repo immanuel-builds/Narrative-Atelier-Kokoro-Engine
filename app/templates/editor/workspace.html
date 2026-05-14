@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project.title }} - Kokoro Editor</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/typography.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/editor.css') }}">
+</head>
+<body style="overflow: hidden;">
+    <div class="top-bar">
+        <div class="flex items-center">
+            <a href="/dashboard" style="text-decoration: none; color: var(--text-muted); margin-right: 1.5rem; font-size: 1.25rem;">&larr;</a>
+            <span class="serif" style="font-size: 1.25rem; letter-spacing: 0.05em;">{{ project.title }}</span>
+        </div>
+        <div class="flex items-center" style="gap: 1.5rem;">
+            <span id="save-status" style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">All changes saved</span>
+            <button form="editor-form" type="submit" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">Save Draft</button>
+        </div>
+    </div>
+
+    <div class="editor-container">
+        <aside class="sidebar">
+            <div class="sidebar-header flex justify-between items-center">
+                <span class="serif" style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em;">Chapters</span>
+                <button onclick="document.getElementById('new-chapter-modal').style.display='flex'" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--indigo-muted);">&plus;</button>
+            </div>
+            <div class="chapter-list">
+                {% for chapter in chapters %}
+                    <a href="/editor/{{ project.id }}?chapter_id={{ chapter.id }}" class="chapter-item {% if active_chapter and active_chapter.id == chapter.id %}active{% endif %}" style="text-decoration: none;">
+                        <span>{{ chapter.title }}</span>
+                        <span onclick="event.preventDefault(); if(confirm('Delete chapter?')) window.location.href='/editor/{{ project.id }}/chapters/{{ chapter.id }}/delete'" style="color: #cbd5e0; font-size: 0.75rem;">&times;</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </aside>
+
+        <main class="writing-area">
+            <div class="editor-wrapper fade-in">
+                {% if active_chapter %}
+                    <form id="editor-form" action="/editor/{{ project.id }}/chapters/{{ active_chapter.id }}/save" method="POST">
+                        <input type="text" name="title" class="editor-title" value="{{ active_chapter.title }}" placeholder="Chapter Title">
+                        <textarea name="content" class="editor-content" placeholder="Begin your narrative...">{{ active_chapter.content }}</textarea>
+                    </form>
+                {% else %}
+                    <div style="text-align: center; margin-top: 10rem;">
+                        <p class="serif" style="color: var(--text-muted); font-size: 1.25rem;">Create a chapter to begin writing.</p>
+                        <button onclick="document.getElementById('new-chapter-modal').style.display='flex'" class="btn btn-outline mt-8">Add Chapter</button>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <!-- New Chapter Modal -->
+    <div id="new-chapter-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div class="card" style="width: 100%; max-width: 400px;">
+            <h2 class="serif mb-8">New Chapter</h2>
+            <form action="/editor/{{ project.id }}/chapters/create" method="POST">
+                <div class="input-group">
+                    <label for="chapter_title">Title</label>
+                    <input type="text" id="chapter_title" name="title" required autofocus>
+                </div>
+                <div class="flex justify-end" style="gap: 1rem;">
+                    <button type="button" onclick="document.getElementById('new-chapter-modal').style.display='none'" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='/js/editor.js') }}"></script>
+</body>
+</html>

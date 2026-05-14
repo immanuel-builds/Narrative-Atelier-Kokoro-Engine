@@ -1,0 +1,9 @@
+:root {
+    --bg-paper: #fcfcf9;
+    --text-main: #2d3748;
+    --text-muted: #718096;
+    --indigo-muted: #4a5568;
+    --border-color: #e2e8f0;
+    --soft-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --transition-speed: 0.3s;
+}

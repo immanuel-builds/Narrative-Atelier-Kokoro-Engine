@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Kokoro Engine - Sharpen Your Narrative{% endblock %}
+
+{% block content %}
+<div class="py-24 fade-in">
+    <div class="container text-center">
+        <h1 class="serif" style="font-size: 3.5rem; margin-bottom: 2rem; line-height: 1.2;">
+            Built to sharpen authors, <br>
+            <span class="italic" style="color: var(--indigo-muted);">not replace them.</span>
+        </h1>
+        <p class="serif" style="font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 3rem auto; font-weight: 300;">
+            A narrative workspace for writers seeking structure, resonance, and clarity.
+        </p>
+
+        <div class="flex justify-center" style="gap: 1.5rem;">
+            {% if not user %}
+                <a href="/auth/register" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1rem;">Begin Your Journey</a>
+                <a href="/auth/login" class="btn btn-outline" style="padding: 1rem 2.5rem; font-size: 1rem;">Sign In</a>
+            {% else %}
+                <a href="/dashboard" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1rem;">Go to Dashboard</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div style="background: white; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 5rem 0;">
+    <div class="container">
+        <div class="flex justify-between" style="gap: 4rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px; text-align: center;">
+                <h3 class="serif mb-8" style="font-size: 1.5rem;">Atmospheric</h3>
+                <p style="color: var(--text-muted); font-size: 0.875rem;">A quiet narrative observatory designed for deep focus and creative flow.</p>
+            </div>
+            <div style="flex: 1; min-width: 250px; text-align: center;">
+                <h3 class="serif mb-8" style="font-size: 1.5rem;">Minimalist</h3>
+                <p style="color: var(--text-muted); font-size: 0.875rem;">Stripped of distractions, leaving only you and the architecture of your story.</p>
+            </div>
+            <div style="flex: 1; min-width: 250px; text-align: center;">
+                <h3 class="serif mb-8" style="font-size: 1.5rem;">Literary</h3>
+                <p style="color: var(--text-muted); font-size: 0.875rem;">Respecting the craft of prose through elegant typography and structured organization.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

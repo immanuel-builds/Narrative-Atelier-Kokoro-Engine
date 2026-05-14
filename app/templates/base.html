@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Kokoro Engine{% endblock %}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/typography.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/animations.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/" class="serif tracking-widest" style="text-decoration: none; color: var(--indigo-muted); font-size: 1.5rem;">KOKORO</a>
+            </div>
+            <div class="nav-links flex items-center">
+                {% if user %}
+                    <a href="/dashboard" style="margin-right: 1.5rem; text-decoration: none; color: var(--text-main); font-size: 0.875rem;">Dashboard</a>
+                    <a href="/auth/logout" class="btn btn-outline" style="padding: 0.5rem 1rem;">Logout</a>
+                {% else %}
+                    <a href="/auth/login" style="margin-right: 1.5rem; text-decoration: none; color: var(--text-main); font-size: 0.875rem;">Login</a>
+                    <a href="/auth/register" class="btn btn-primary" style="padding: 0.5rem 1rem;">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="container">
+            &copy; 2024 Narrative Atelier: Kokoro Engine
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
