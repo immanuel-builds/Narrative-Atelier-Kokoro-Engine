@@ -33,7 +33,14 @@ async def export_project(
             content = storage.get_content(active_draft.file_path)
         chapters_data.append({"title": ch.title, "content": content})
 
-    file_path = ExportService.export_project(project.title, chapters_data, format)
+    try:
+        file_path = ExportService.export_project(project.title, chapters_data, format)
+    except Exception as e:
+        # Fallback to .md if .docx fails
+        if format != "md":
+            file_path = ExportService.export_project(project.title, chapters_data, "md")
+        else:
+            raise HTTPException(status_code=500, detail=f"Export failed: {str(e)}")
 
     if file_path and Path(file_path).exists():
         return FileResponse(

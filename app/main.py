@@ -12,6 +12,9 @@ from app.storage.routes import router as storage_router
 from app.reliability.routes import router as reliability_router
 from app.auth.auth import get_user_from_session
 import os
+from sqlalchemy.exc import OperationalError
+from fastapi.responses import HTMLResponse
+from pathlib import Path
 
 app = FastAPI(title="Narrative Atelier: Kokoro Engine")
 
@@ -28,6 +31,30 @@ app.include_router(diagnostics_router)
 app.include_router(pov_router)
 app.include_router(storage_router)
 app.include_router(reliability_router)
+
+@app.exception_handler(OperationalError)
+async def db_connection_exception_handler(request: Request, exc: OperationalError):
+    # Emergency Recovery Mode
+    projects_dir = Path("Projects")
+    local_projects = []
+
+    if projects_dir.exists():
+        for p_dir in projects_dir.iterdir():
+            if p_dir.is_dir():
+                files = []
+                # Look in Chapters and Drafts
+                for sub in ["Chapters", "Drafts"]:
+                    path = p_dir / sub
+                    if path.exists():
+                        for f in path.glob("*.md"):
+                            files.append({"name": f"{sub}/{f.name}", "path": str(f)})
+                local_projects.append({"name": p_dir.name, "files": files})
+
+    return templates.TemplateResponse("reliability/recovery_mode.html", {
+        "request": request,
+        "local_projects": local_projects,
+        "storage_root": str(projects_dir.absolute())
+    }, status_code=503)
 
 @app.get("/")
 async def landing(request: Request, user=Depends(get_user_from_session)):

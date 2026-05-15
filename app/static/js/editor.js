@@ -32,6 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
         Diagnostics.init();
     }
 
+    if (window.ErrorHandler) {
+        ErrorHandler.init();
+    }
+
     if (window.RecoveryManager) {
         RecoveryManager.init();
     }
@@ -39,6 +43,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.EditorSearch) {
         EditorSearch.init();
     }
+
+    // Integrity Check
+    const checkIntegrity = async () => {
+        try {
+            const resp = await fetch(`/reliability/check/${projectId}`);
+            const data = await resp.json();
+            const circle = document.getElementById('integrity-circle');
+            const text = document.getElementById('integrity-text');
+            if (circle && text) {
+                if (data.status === 'healthy') {
+                    circle.setAttribute('fill', '#48bb78');
+                    text.innerText = 'INTEGRITY SECURE';
+                } else {
+                    circle.setAttribute('fill', '#f6ad55');
+                    text.innerText = 'STORAGE WARNING';
+                    if (window.ErrorHandler) ErrorHandler.showToast("Local file mismatch detected. Please check your Projects folder.");
+                }
+            }
+        } catch (e) {
+            console.error("Integrity check failed", e);
+        }
+    };
+    if (projectId) checkIntegrity();
 
     // Statistics
     const updateStats = () => {

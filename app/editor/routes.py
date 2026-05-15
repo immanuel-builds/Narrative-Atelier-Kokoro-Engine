@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request, Depends, Form, status, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from pathlib import Path
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.auth.auth import login_required
@@ -67,7 +68,10 @@ async def workspace(
                 active_draft = drafts[0]
 
         if active_draft and active_draft.file_path:
-            content = storage.get_content(active_draft.file_path)
+            if Path(active_draft.file_path).exists():
+                content = storage.get_content(active_draft.file_path)
+            else:
+                content = "[RECOVERY] Local file missing. Please check the Backups folder or relink your project."
 
     return templates.TemplateResponse("editor/workspace.html", {
         "request": request,

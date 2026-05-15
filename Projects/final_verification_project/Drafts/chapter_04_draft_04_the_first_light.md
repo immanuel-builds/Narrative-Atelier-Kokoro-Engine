@@ -1,1 +1,0 @@
-I stood at the edge of the world. It felt like the end of everything.
