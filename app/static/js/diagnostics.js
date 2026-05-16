@@ -27,13 +27,13 @@ const Diagnostics = {
         this.renderLoading();
 
         try {
-            const response = await fetch('/diagnostics/analyze', {
+            const response = await fetch('/intelligence/analyze', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text })
             });
             const data = await response.json();
-            this.renderResults(data.observations);
+            this.renderResults(data);
         } catch (error) {
             console.error('Analysis error:', error);
             this.renderError();

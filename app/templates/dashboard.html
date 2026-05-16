@@ -10,7 +10,8 @@
             <button onclick="document.getElementById('create-modal').style.display='flex'" class="btn btn-primary">New Project</button>
         </div>
 
-        <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
+        <div class="grid relative" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
+            <div class="absolute -right-24 bottom-0 opacity-5 pointer-events-none" style="width: 400px; height: 400px; background: url('/static/images/sumie-bg.png') no-repeat bottom right; background-size: contain;"></div>
             {% for project in projects %}
                 <div class="card flex flex-col justify-between">
                     <div>

@@ -6,7 +6,7 @@ from app.dashboard.routes import router as dashboard_router
 from app.projects.routes import router as projects_router
 from app.editor.routes import router as editor_router
 from app.ai.routes import router as ai_router
-from app.diagnostics.routes import router as diagnostics_router
+from app.intelligence.routes import router as intelligence_router
 from app.pov.routes import router as pov_router
 from app.storage.routes import router as storage_router
 from app.reliability.routes import router as reliability_router
@@ -27,7 +27,7 @@ app.include_router(dashboard_router)
 app.include_router(projects_router)
 app.include_router(editor_router)
 app.include_router(ai_router)
-app.include_router(diagnostics_router)
+app.include_router(intelligence_router)
 app.include_router(pov_router)
 app.include_router(storage_router)
 app.include_router(reliability_router)
