@@ -1,18 +1,33 @@
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+@keyframes fadeInReveal {
+    from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-.fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
+.reveal {
+    opacity: 0;
+    transition: var(--transition-cinematic);
 }
 
-@keyframes subtlePulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
+.reveal.visible {
+    animation: fadeInReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.pulse {
-    animation: subtlePulse 2s infinite ease-in-out;
+.parallax-layer {
+    transition: transform 0.1s ease-out;
+}
+
+@keyframes inkDrift {
+    0% { transform: translate(0, 0); opacity: 0; }
+    50% { opacity: 0.3; }
+    100% { transform: translate(100px, -50px); opacity: 0; }
+}
+
+.ink-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--charcoal);
+    border-radius: 50%;
+    filter: blur(2px);
+    animation: inkDrift 10s infinite linear;
 }

@@ -19,18 +19,19 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav>
-        <div class="container">
+    <nav style="padding: 2rem 0; border-bottom: 1px solid var(--border-color); background: rgba(252, 252, 249, 0.9); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
             <div class="nav-brand">
-                <a href="/" class="serif tracking-widest" style="text-decoration: none; color: var(--indigo-muted); font-size: 1.5rem;">KOKORO</a>
+                <a href="/" class="serif tracking-widest" style="text-decoration: none; color: var(--charcoal); font-size: 1.25rem; font-weight: 500;">KOKORO</a>
             </div>
-            <div class="nav-links flex items-center">
+            <div class="nav-links" style="display: flex; align-items: center; gap: 2.5rem;">
+                <a href="/#features" style="text-decoration: none; color: var(--text-main); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em;">Capabilities</a>
                 {% if user %}
-                    <a href="/dashboard" style="margin-right: 1.5rem; text-decoration: none; color: var(--text-main); font-size: 0.875rem;">Dashboard</a>
-                    <a href="/auth/logout" class="btn btn-outline" style="padding: 0.5rem 1rem;">Logout</a>
+                    <a href="/dashboard" style="text-decoration: none; color: var(--text-main); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em;">Dashboard</a>
+                    <a href="/auth/logout" class="btn btn-outline" style="padding: 0.6rem 1.5rem; font-size: 0.75rem;">Logout</a>
                 {% else %}
-                    <a href="/auth/login" style="margin-right: 1.5rem; text-decoration: none; color: var(--text-main); font-size: 0.875rem;">Login</a>
-                    <a href="/auth/register" class="btn btn-primary" style="padding: 0.5rem 1rem;">Register</a>
+                    <a href="/auth/login" style="text-decoration: none; color: var(--text-main); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em;">Login</a>
+                    <a href="/auth/register" class="btn btn-primary" style="padding: 0.6rem 1.5rem; font-size: 0.75rem;">Launch Atelier</a>
                 {% endif %}
             </div>
         </div>
@@ -40,9 +41,21 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer>
+    <footer class="section" style="padding: 4rem 0; border-top: 1px solid var(--border-color); background: white;">
         <div class="container">
-            &copy; 2024 Narrative Atelier: Kokoro Engine
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 2rem;">
+                <div>
+                    <span class="serif tracking-widest" style="font-size: 1.25rem; color: var(--indigo-muted); display: block; margin-bottom: 1rem;">KOKORO</span>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); max-width: 300px;">Built to sharpen authors, not replace them. A sacred archive for narrative refinement.</p>
+                </div>
+                <div style="text-align: right;">
+                    <span class="tracking-widest" style="font-size: 0.7rem; color: var(--indigo-muted); display: block; margin-bottom: 1rem;">Ownership</span>
+                    <p style="font-size: 0.875rem; color: var(--text-muted);">Local-first. Private. Yours.</p>
+                </div>
+            </div>
+            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); text-align: center; font-size: 0.75rem; color: var(--fog-gray);">
+                &copy; 2024 Narrative Atelier: Kokoro Engine. All creative rights reserved to the author.
+            </div>
         </div>
     </footer>
 
