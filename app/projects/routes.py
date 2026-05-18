@@ -1,55 +1,41 @@
-from fastapi import APIRouter, Request, Depends, Form, status
-from fastapi.responses import RedirectResponse
-from sqlalchemy.orm import Session
-from app.core.database import get_db
-from app.auth.auth import login_required
-from app.models.models import Project
-from app.storage.markdown_handler import MarkdownHandler
+from flask import redirect, url_for, request, Blueprint
+from flask_login import login_required, current_user
+from app import db
+from app.models import Project
 
-router = APIRouter(prefix="/projects", tags=["projects"])
+bp = Blueprint('projects', __name__)
 
-@router.post("/create")
-async def create_project(
-    request: Request,
-    title: str = Form(...),
-    description: str = Form(None),
-    user=Depends(login_required),
-    db: Session = Depends(get_db)
-):
-    paths = MarkdownHandler.ensure_project_structure(title)
-    new_project = Project(
-        user_id=user.id,
-        title=title,
-        description=description,
-        storage_path=str(paths["root"])
-    )
-    db.add(new_project)
-    db.commit()
-    return RedirectResponse(url="/dashboard", status_code=status.HTTP_302_FOUND)
+@bp.route('/create', methods=['POST'])
+@login_required
+def create():
+    title = request.form.get('title')
+    description = request.form.get('description')
+    if title:
+        project = Project(title=title, description=description, author=current_user)
+        db.session.add(project)
+        db.session.commit()
+    return redirect(url_for('dashboard.index'))
 
-@router.post("/{project_id}/edit")
-async def edit_project(
-    project_id: int,
-    title: str = Form(...),
-    description: str = Form(None),
-    user=Depends(login_required),
-    db: Session = Depends(get_db)
-):
-    project = db.query(Project).filter(Project.id == project_id, Project.user_id == user.id).first()
-    if project:
+@bp.route('/delete/<int:id>', methods=['POST'])
+@login_required
+def delete(id):
+    project = Project.query.get_or_404(id)
+    if project.user_id != current_user.id:
+        return redirect(url_for('dashboard.index'))
+    db.session.delete(project)
+    db.session.commit()
+    return redirect(url_for('dashboard.index'))
+
+@bp.route('/edit/<int:id>', methods=['POST'])
+@login_required
+def edit(id):
+    project = Project.query.get_or_404(id)
+    if project.user_id != current_user.id:
+        return redirect(url_for('dashboard.index'))
+    title = request.form.get('title')
+    description = request.form.get('description')
+    if title:
         project.title = title
         project.description = description
-        db.commit()
-    return RedirectResponse(url="/dashboard", status_code=status.HTTP_302_FOUND)
-
-@router.get("/{project_id}/delete")
-async def delete_project(
-    project_id: int,
-    user=Depends(login_required),
-    db: Session = Depends(get_db)
-):
-    project = db.query(Project).filter(Project.id == project_id, Project.user_id == user.id).first()
-    if project:
-        db.delete(project)
-        db.commit()
-    return RedirectResponse(url="/dashboard", status_code=status.HTTP_302_FOUND)
+        db.session.commit()
+    return redirect(url_for('dashboard.index'))

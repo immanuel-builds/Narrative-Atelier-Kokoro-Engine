@@ -4,60 +4,46 @@ A minimalist narrative workspace built to sharpen authors, not replace them.
 
 ## Features (MVP Foundation)
 
-- **Authentication:** Session-based login and registration.
-- **Project Management:** Create and dismantle narrative observatories (projects).
-- **Writing Workspace:** A polished, distraction-free editor with focus mode, fullscreen support, and elegant typography.
-- **Autosave & Persistence:** Smooth autosave logic every 15 seconds and on typing pauses, with workspace session persistence.
-- **Navigation & Stats:** Chapter tab system for quick switching and live writing statistics (word count, reading time).
-- **Draft & Versioning:** Create multiple drafts for each chapter, switch between them, archive "stored memories", and experiment without fear of losing progress.
-- **AI Enhancement Layer:** Contextual AI tools for tone refinement, description enhancement, and style transformation.
-- **AI Editorial Coach:** A restrained, literary AI coach providing critique on pacing, dialogue, and subtext.
-- **Creative Integrity System:** Guardrails that prevent automated story generation and ensure authors remain the primary creators.
-- **Atmospheric Design:** Japanese-inspired minimalist UI with a focus on typography, contemplation, and calm.
+- **Authentication:** Secure session-based login and registration system.
+- **Project Management:** Create, organize, and manage multiple writing projects from a central dashboard.
+- **Writing Workspace:** A clean, distraction-free environment designed for immersion and focus.
+- **Chapter System:** Organize your manuscripts into structured chapters with easy navigation.
+- **Autosave Persistence:** Integrated autosave logic to ensure your progress is preserved as you write.
+- **Atmospheric Design:** Japanese-inspired minimalist UI featuring muted indigo tones, elegant Noto Serif JP typography, and a calm, literary aesthetic.
 
 ## Tech Stack
 
-- **Backend:** FastAPI, SQLAlchemy
-- **Database:** SQLite (default for MVP), support for MySQL
-- **Frontend:** Jinja2 Templates, Vanilla JavaScript, Modular CSS
+- **Backend:** Flask (Python)
+- **Database:** SQLAlchemy ORM with SQLite
+- **Frontend:** TailwindCSS (via CDN), Vanilla JavaScript, Jinja2 Templates
+- **Authentication:** Flask-Login with Werkzeug password hashing
 
 ## Setup Instructions
 
-1. **Clone the repository.**
-2. **Set up Environment Variables:**
-   Create a `.env` file from `.env.example` and add your API keys:
-   ```bash
-   GROQ_API_KEY=your_key_here
-   GEMINI_API_KEY=your_key_here
-   DEFAULT_AI_PROVIDER=groq # or gemini
-   ```
-3. **Install dependencies:**
+1. **Install dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
-   *Note: If you encounter bcrypt issues, ensure you are using `bcrypt<4.1.0` with `passlib`.*
-3. **Initialize the database:**
+2. **Initialize the database and run the app:**
    ```bash
-   python3 init_db.py
+   python3 run.py
    ```
-4. **Run the application:**
-   ```bash
-   uvicorn app.main:app --reload
-   ```
-5. **Access the app:**
-   Open `http://127.0.0.1:8000` in your browser.
+   *The database will be automatically initialized on first run.*
+3. **Access the app:**
+   Open `http://127.0.0.1:5000` in your browser.
 
 ## Project Structure
 
 ```
 /app
-    main.py         # App entry point and router registration
-    /core           # Config and database setup
-    /auth           # Authentication logic and routes
-    /dashboard      # Project listing and dashboard
-    /projects       # Project CRUD
-    /editor         # Writing workspace and chapter management
-    /models         # SQLAlchemy models
+    __init__.py     # App initialization and Blueprint registration
+    config.py       # Configuration settings
+    models.py       # SQLAlchemy models (User, Project, Chapter)
+    /auth           # Authentication routes
+    /dashboard      # User dashboard routes
+    /projects       # Project management routes
+    /editor         # Writing workspace routes
     /templates      # Jinja2 templates
-    /static         # CSS, JS, and images
+    /static         # CSS and JS assets
+run.py              # Application entry point
 ```

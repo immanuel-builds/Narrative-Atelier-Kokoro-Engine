@@ -1,1 +1,0 @@
-The snow fell silently on the cedar trees. Kaito stood at the edge of the clearing, his breath misting in the cold air. He had been walking for three days, following the trail of the white fox.

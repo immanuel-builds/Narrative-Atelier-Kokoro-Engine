@@ -1,195 +1,59 @@
 {% extends "base.html" %}
 
-{% block title %}Kokoro Engine - A Cinematic Literary Observatory{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', path='/css/landing.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/hero.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', path='/css/features.css') }}">
-{% endblock %}
+{% block title %}Kokoro Engine - Cinematic Literary Observatory{% endblock %}
 
 {% block content %}
-<!-- 1. Hero Section -->
-<section class="hero overflow-hidden">
-    <div class="hero-artwork parallax-layer" data-speed="0.2"></div>
-    <div class="ink-particles" id="ink-particles"></div>
+<div class="relative overflow-hidden bg-kokoro">
+    <!-- Atmospheric background element -->
+    <div class="absolute inset-0 z-0 opacity-5 pointer-events-none">
+        <svg class="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M0 100 C 20 0 50 0 100 100 Z" fill="currentColor" class="text-kokoro-indigo" />
+        </svg>
+    </div>
 
-    <div class="container">
-        <div class="hero-content reveal">
-            <span class="tracking-widest hero-tagline">Narrative Atelier</span>
-            <h1 class="serif hero-title">Built to sharpen authors, <br><span class="italic">not replace them.</span></h1>
-            <p class="subtext">A local-first narrative workspace for writers seeking clarity, refinement, and literary depth.</p>
+    <div class="relative z-10 max-w-5xl mx-auto px-4 pt-32 pb-40 text-center">
+        <span class="serif italic text-kokoro-indigo tracking-widest text-sm mb-6 block uppercase opacity-60">Narrative Atelier</span>
+        <h1 class="serif text-5xl md:text-7xl font-medium text-kokoro-indigo leading-tight mb-8">
+            Built to sharpen authors, <br>
+            <span class="italic font-light">not replace them.</span>
+        </h1>
+        <p class="max-w-2xl mx-auto text-gray-500 text-lg md:text-xl leading-relaxed mb-12 font-light">
+            A minimalist, local-first narrative workspace designed for the serious writer. Kokoro Engine provides a sacred space for your ink to find its true resonance.
+        </p>
 
-            <div class="hero-cta">
-                {% if user %}
-                    <a href="/dashboard" class="btn btn-primary">Launch Workspace</a>
-                {% else %}
-                    <a href="/auth/register" class="btn btn-primary">Launch Workspace</a>
-                    <a href="#features" class="btn btn-outline">Explore Features</a>
-                {% endif %}
-            </div>
+        <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <a href="{{ url_for('auth.register') }}" class="btn-primary px-10 py-4 rounded-md font-medium text-lg shadow-soft w-full sm:w-auto">
+                Launch Workspace
+            </a>
+            <a href="{{ url_for('auth.login') }}" class="text-kokoro-indigo font-medium border-b border-kokoro-indigo pb-1 hover:opacity-75 transition">
+                Enter Existing Atelier
+            </a>
+        </div>
+    </div>
+</div>
+
+<section class="max-w-5xl mx-auto px-4 py-24">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-16 text-center">
+        <div>
+            <div class="serif text-2xl text-kokoro-indigo mb-4 italic opacity-80">Minimalist</div>
+            <p class="text-sm text-gray-500 leading-relaxed">A distraction-free environment that centers your voice and honors the silence of creation.</p>
+        </div>
+        <div>
+            <div class="serif text-2xl text-kokoro-indigo mb-4 italic opacity-80">Atmospheric</div>
+            <p class="text-sm text-gray-500 leading-relaxed">Inspired by the elegance of Japanese aesthetics, designed to evoke a sense of literary reverence.</p>
+        </div>
+        <div>
+            <div class="serif text-2xl text-kokoro-indigo mb-4 italic opacity-80">Modular</div>
+            <p class="text-sm text-gray-500 leading-relaxed">A foundation built for growth. Securely organize your projects into a structured manuscript.</p>
         </div>
     </div>
 </section>
 
-<!-- 2. Philosophy Section -->
-<section class="section bg-alt">
-    <div class="container">
-        <div class="grid-2">
-            <div class="reveal">
-                <span class="tracking-widest">Philosophy</span>
-                <h2 class="serif section-title">Craftsmanship Over <br>Automation</h2>
-                <p>We believe technology should serve the author's vision, not dictate it. Kokoro Engine is designed to assist rather than replace, focusing on narrative refinement over content generation.</p>
-            </div>
-            <div class="reveal">
-                <blockquote class="serif">
-                    "The brush only follows the heart. The ink only reveals the truth."
-                </blockquote>
-            </div>
-        </div>
+<section class="bg-white border-y border-kokoro py-20 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+        <blockquote class="serif text-2xl md:text-3xl text-kokoro-indigo italic font-light leading-relaxed">
+            "The brush only follows the heart. The ink only reveals the truth."
+        </blockquote>
     </div>
 </section>
-
-<!-- 3. Core Features Section -->
-<section id="features" class="section">
-    <div class="container">
-        <div class="text-center reveal" style="margin-bottom: 5rem;">
-            <span class="tracking-widest">Capabilities</span>
-            <h2 class="serif section-title">An Observatory for Prose</h2>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-            <div class="feature-card reveal">
-                <div class="feature-icon">✨</div>
-                <h3 class="serif">Prose Enhancement</h3>
-                <p class="subtext" style="font-size: 0.875rem;">AI-assisted refinement that polishes your voice without altering your intent.</p>
-            </div>
-            <div class="feature-card reveal">
-                <div class="feature-icon">🔍</div>
-                <h3 class="serif">Narrative Diagnostics</h3>
-                <p class="subtext" style="font-size: 0.875rem;">Detect pacing stagnation, exposition density, and dialogue balance instantly.</p>
-            </div>
-            <div class="feature-card reveal">
-                <div class="feature-icon">🪞</div>
-                <h3 class="serif">POV Mirror</h3>
-                <h3 class="serif"></h3>
-                <p class="subtext" style="font-size: 0.875rem;">Transform and compare narrative perspectives to find the most resonant path.</p>
-            </div>
-            <div class="feature-card reveal">
-                <div class="feature-icon">📚</div>
-                <h3 class="serif">Draft Versioning</h3>
-                <p class="subtext" style="font-size: 0.875rem;">Maintain a living history of every scene. Experiment without the fear of loss.</p>
-            </div>
-            <div class="feature-card reveal">
-                <div class="feature-icon">💾</div>
-                <h3 class="serif">Local-First</h3>
-                <p class="subtext" style="font-size: 0.875rem;">Your stories remain yours. Private, offline, and stored in human-readable Markdown.</p>
-            </div>
-            <div class="feature-card reveal">
-                <div class="feature-icon">📦</div>
-                <h3 class="serif">Elegant Export</h3>
-                <p class="subtext" style="font-size: 0.875rem;">Package your manuscript into professional DOCX or archival ZIP bundles.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 4. Writing Workflow Section -->
-<section class="section bg-alt">
-    <div class="container">
-        <div class="text-center reveal">
-            <span class="tracking-widest">Workflow</span>
-            <h2 class="serif section-title">The Path of Creation</h2>
-        </div>
-
-        <div class="workflow-container">
-            <div class="workflow-step reveal">
-                <div class="serif" style="font-size: 1.25rem; margin-bottom: 1rem;">1. Organize</div>
-                <p class="subtext" style="font-size: 0.75rem; margin: 0 auto;">Structure your project into chapters and scenes.</p>
-            </div>
-            <div class="workflow-step reveal">
-                <div class="serif" style="font-size: 1.25rem; margin-bottom: 1rem;">2. Write</div>
-                <p class="subtext" style="font-size: 0.75rem; margin: 0 auto;">Immerse yourself in a distraction-free environment.</p>
-            </div>
-            <div class="workflow-step reveal">
-                <div class="serif" style="font-size: 1.25rem; margin-bottom: 1rem;">3. Analyze</div>
-                <p class="subtext" style="font-size: 0.75rem; margin: 0 auto;">Observe narrative patterns through intelligence layers.</p>
-            </div>
-            <div class="workflow-step reveal">
-                <div class="serif" style="font-size: 1.25rem; margin-bottom: 1rem;">4. Refine</div>
-                <p class="subtext" style="font-size: 0.75rem; margin: 0 auto;">Enhance emotional resonance and structural clarity.</p>
-            </div>
-            <div class="workflow-step reveal">
-                <div class="serif" style="font-size: 1.25rem; margin-bottom: 1rem;">5. Package</div>
-                <p class="subtext" style="font-size: 0.75rem; margin: 0 auto;">Export a professional-grade manuscript ready for the world.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 5. Local-First Philosophy Section -->
-<section class="section">
-    <div class="container">
-        <div class="grid-2">
-            <div class="reveal">
-                <div style="width: 100%; height: 300px; background: var(--bg-paper); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                     <div style="position: absolute; width: 80%; height: 80%; background: white; border: 1px solid var(--border-color); transform: rotate(-2deg); box-shadow: var(--shadow-soft);"></div>
-                     <div style="position: absolute; width: 80%; height: 80%; background: white; border: 1px solid var(--border-color); transform: rotate(1deg); box-shadow: var(--shadow-soft);"></div>
-                     <span class="serif italic" style="z-index: 5; color: var(--indigo-muted);">Manuscript.md</span>
-                </div>
-            </div>
-            <div class="reveal">
-                <span class="tracking-widest">Ownership</span>
-                <h2 class="serif section-title">Your Stories <br>Remain Yours</h2>
-                <p>No proprietary lock-in. No cloud dependence. Your work is stored locally on your machine in open formats. Privacy is the foundation of creative freedom.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 6. Showcase Section -->
-<section class="section bg-alt overflow-hidden">
-    <div class="container">
-        <div class="text-center reveal" style="margin-bottom: 4rem;">
-            <span class="tracking-widest">The Workspace</span>
-            <h2 class="serif section-title">A Sacred Space for Ink</h2>
-        </div>
-
-        <div class="reveal" style="position: relative; max-width: 900px; margin: 0 auto;">
-            <!-- Mockup layer 1: Main Editor -->
-            <div style="background: white; border: 1px solid var(--border-color); aspect-ratio: 16/9; box-shadow: 0 20px 50px rgba(0,0,0,0.1); padding: 2rem; position: relative; z-index: 3;">
-                <div style="width: 20%; height: 100%; border-right: 1px solid var(--border-color); float: left;"></div>
-                <div style="width: 80%; height: 100%; padding-left: 2rem; float: left;">
-                    <div style="width: 100%; height: 2rem; border-bottom: 1px solid var(--border-color); margin-bottom: 2rem;"></div>
-                    <div style="width: 60%; height: 1rem; background: var(--bg-paper); margin-bottom: 1rem;"></div>
-                    <div style="width: 100%; height: 1rem; background: var(--bg-paper); margin-bottom: 1rem;"></div>
-                    <div style="width: 90%; height: 1rem; background: var(--bg-paper); margin-bottom: 1rem;"></div>
-                </div>
-            </div>
-            <!-- Mockup layer 2: Floating Panels -->
-            <div class="parallax-layer" data-speed="0.1" style="position: absolute; top: 10%; right: -5%; width: 250px; height: 350px; background: white; border: 1px solid var(--indigo-muted); box-shadow: var(--shadow-soft); z-index: 5; padding: 1.5rem;">
-                <span class="tracking-widest" style="font-size: 0.6rem;">Diagnostics</span>
-                <div style="margin-top: 1rem; height: 2px; background: var(--gold-accent); width: 40%;"></div>
-            </div>
-            <div class="parallax-layer" data-speed="-0.05" style="position: absolute; bottom: -10%; left: -5%; width: 200px; height: 200px; background: var(--bg-paper); border: 1px solid var(--border-color); z-index: 5; padding: 1.5rem;">
-                <span class="tracking-widest" style="font-size: 0.6rem;">POV Mirror</span>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 7. Final CTA Section -->
-<section class="section flex-center text-center">
-    <div class="container reveal">
-        <h2 class="serif section-title">Every story begins <br>in silence.</h2>
-        <p class="subtext" style="margin: 0 auto 3rem auto;">Refine yours with intention in the Narrative Atelier.</p>
-        <div class="hero-cta" style="justify-content: center;">
-            <a href="/auth/register" class="btn btn-primary" style="padding: 1.25rem 3rem;">Launch Narrative Atelier</a>
-        </div>
-    </div>
-</section>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{{ url_for('static', path='/js/landing-interactions.js') }}"></script>
 {% endblock %}

@@ -3,38 +3,41 @@
 {% block title %}Register - Kokoro Engine{% endblock %}
 
 {% block content %}
-<div class="py-24 fade-in">
-    <div class="container" style="max-width: 400px;">
-        <div class="card">
-            <h2 class="serif text-center mb-8" style="font-size: 2rem;">Register</h2>
+<div class="flex items-center justify-center min-h-[70vh] px-4">
+    <div class="max-w-md w-full bg-white p-10 rounded-lg shadow-soft border border-kokoro">
+        <div class="text-center mb-8">
+            <h2 class="serif text-3xl font-medium text-kokoro-indigo">Begin Your Journey</h2>
+            <p class="text-gray-500 text-sm mt-2">Create an account to start managing your manuscripts.</p>
+        </div>
 
-            {% if error %}
-                <div class="alert alert-error">{{ error }}</div>
-            {% endif %}
-
-            <form action="/auth/register" method="POST">
-                <div class="input-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                <div class="input-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="input-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <div class="flex items-center justify-between" style="margin-top: 2rem;">
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
-                </div>
-            </form>
-
-            <div class="text-center mt-8">
-                <p style="font-size: 0.875rem; color: var(--text-muted);">
-                    Already registered? <a href="/auth/login" style="color: var(--indigo-muted);">Login here</a>
-                </p>
+        <form action="{{ url_for('auth.register') }}" method="POST" class="space-y-6">
+            <div>
+                <label for="username" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Username</label>
+                <input type="text" name="username" id="username" required
+                    class="w-full px-4 py-3 bg-kokoro border border-kokoro rounded text-sm focus:border-kokoro-indigo transition duration-200">
             </div>
+
+            <div>
+                <label for="email" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
+                <input type="email" name="email" id="email" required
+                    class="w-full px-4 py-3 bg-kokoro border border-kokoro rounded text-sm focus:border-kokoro-indigo transition duration-200">
+            </div>
+
+            <div>
+                <label for="password" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Password</label>
+                <input type="password" name="password" id="password" required
+                    class="w-full px-4 py-3 bg-kokoro border border-kokoro rounded text-sm focus:border-kokoro-indigo transition duration-200">
+            </div>
+
+            <button type="submit" class="w-full btn-primary py-3 rounded font-medium shadow-sm">
+                Create Author Account
+            </button>
+        </form>
+
+        <div class="mt-8 pt-6 border-t border-kokoro text-center">
+            <p class="text-xs text-gray-500">Already a member?
+                <a href="{{ url_for('auth.login') }}" class="text-kokoro-indigo font-semibold hover:underline">Login</a>
+            </p>
         </div>
     </div>
 </div>
